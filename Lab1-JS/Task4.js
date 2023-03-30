@@ -14,6 +14,3 @@ const cachedCalc = wrapper(calc);
 console.log(cachedCalc(2, 2, 3)); // 7 calculated
 console.log(cachedCalc(5, 8, 1)); // 14 calculated
 console.log(cachedCalc(2, 2, 3)); // 7 from cache
-
-
-
