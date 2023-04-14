@@ -3,10 +3,14 @@ const wrapper = (func: Function) => {
     return function (...args: unknown[]) {
         if (cache.hasOwnProperty(args.toString())) {
             console.log('from cache')
-            return Object.getOwnPropertyDescriptor(cache, args.toString())?.value
+            type ObjectKey = keyof typeof cache
+            return cache[args.toString() as ObjectKey]
         }
-        Object.defineProperty(cache, args.toString(), func.apply(cache, args))
-        return func.apply(cache, args)
+        let res = func.apply(cache, args)
+        Object.defineProperty(cache, args.toString(), {
+            value: res
+        })
+        return res
     }
 };
 
@@ -15,4 +19,4 @@ const calc = (a: number, b: number, c: number) => a + b + c;
 const cachedCalc = wrapper(calc);
 console.log(cachedCalc(2, 2, 3)); // 7 calculated
 console.log(cachedCalc(5, 8, 1)); // 14 calculated
-console.log(cachedCalc(2, 2, 3)); // 7 from cache
+console.log(cachedCalc(2,2,3)); // 7 from cache

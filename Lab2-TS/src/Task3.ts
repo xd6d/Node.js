@@ -2,7 +2,7 @@ function deepCopy(obj: Object) {
     let created: object = JSON.parse(JSON.stringify(obj))
     for (let prop in obj) {
         let pd = Object.getOwnPropertyDescriptor(obj, prop);
-        if (pd !== undefined && typeof pd.value === "function") {
+        if (pd !== undefined && pd.value instanceof Function) {
              Object.defineProperty(created, prop, pd)
         }
     }
@@ -20,7 +20,6 @@ let testObj = {
 }
 
 let copied = deepCopy(testObj)
-console.log(copied)
 console.log(copied === testObj) //false
 testObj.nestedObject.id = 3
 console.log(testObj)
