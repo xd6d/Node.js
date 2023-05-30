@@ -1,44 +1,52 @@
-import {usersRepository} from "./usersRepository.js";
-import {UserDto} from "./dto/user.js";
-import httpErrors from 'http-errors';
+import {AppDataSource} from "../../data-source.js";
+import {User} from "./entity/user.js";
 
-const {BadRequest} = httpErrors;
+const userRepository = AppDataSource.getRepository(User)
 
 class UserService {
-    create(username: string, name?: string) {
-        if (!username)
-            throw new BadRequest("No username given")
-        const dto = new UserDto(username, name || username)
-        return usersRepository.create(dto)
+    create(username: string, email: string, age: number, info: string, address: {
+        city: string;
+        street: string
+    }) {
+        const user = new User()
+        user.username = username
+        user.email = email
+        user.age = age
+        user.info = info
+        user.address = address
+        return userRepository.save(user)
     }
 
     getAllUsers() {
-        return usersRepository.getAllUsers()
+        return userRepository.find()
     }
 
     getUser(id: string) {
-        const user = usersRepository.getUser(id)
-        if (!user) {
-            throw new BadRequest("No such user")
-        }
-        return user
+        return userRepository.findOneBy({id: id})
     }
 
-    update(id: string, username?: string, name?: string) {
-        const user = this.getUser(id)
-        if (username)
-            user.username = username
-        if (name)
-            user.name = name
-        return user
+    update(id: string, username: string, email: string, age: number, info: string, address: {
+        city: string;
+        street: string
+    }) {
+        const user = new User()
+        user.username = username
+        user.email = email
+        user.age = age
+        user.info = info
+        user.address = address
+        return userRepository.update({id: id}, user).then(result => result.affected)
     }
 
     delete(id: string) {
-        const user = usersRepository.delete(id)
-        if (!user) {
-            throw new BadRequest("No such user")
-        }
-        return user
+        return userRepository.delete({id: id}).then(result => result.affected)
+    }
+
+    getAllByTitle(title: string) {
+        return userRepository.createQueryBuilder("users")
+            .innerJoin("posts", "p", "p.userId=users.id")
+            .where("p.title=:title", {title: title})
+            .getMany()
     }
 }
 

@@ -2,10 +2,11 @@ import express, {NextFunction, Request, Response} from 'express'
 import {HttpError} from 'http-errors'
 import {usersController} from "./modules/user/usersController.js";
 import bp from 'body-parser'
+import {postController} from "./modules/post/postController.js";
 
 export class Server {
     private app = express();
-    private port = 3000
+    private port = parseInt(process.env.port || "3000", 10)
 
     start() {
         this.initBodyParser()
@@ -16,12 +17,15 @@ export class Server {
 
     private initRoutes() {
         this.app.use("/users/", usersController);
+        this.app.use("/posts/", postController);
     }
 
     private initErrorHandling() {
         this.app.use(
-            (err: HttpError, req: Request, res: Response, next: NextFunction) => {
-                const statusCode = err.status || 500;
+            (err: Error, req: Request, res: Response, next: NextFunction) => {
+                let statusCode = 500;
+                if (err instanceof HttpError)
+                    statusCode = err.status
                 res.status(statusCode).send({
                     message: err.message,
                     status: statusCode,
@@ -36,6 +40,5 @@ export class Server {
 
     private initBodyParser() {
         this.app.use(bp.json())
-        this.app.use(bp.urlencoded({ extended: true }))
     }
 }
