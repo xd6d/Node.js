@@ -3,8 +3,8 @@ const array: Array<string> = ["one", "two", "three"];
 
 async function runSequent<T>(array: Array<T>, fn: (item: T, index: number) => Promise<{ item: T; index: number }>) {
     const res: { item: T; index: number }[] = []
-    for (let i = 0; i<array.length; i++){
-        res.push(await fn(array[i], i))
+    for await (let [i, element] of array.entries()){
+        res.push(await fn(element, i))
     }
     return res
 }
