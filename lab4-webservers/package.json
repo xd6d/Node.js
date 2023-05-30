@@ -2,13 +2,13 @@
   "name": "lab4-webservers",
   "version": "1.0.0",
   "type": "module",
-  "description": "",
+  "description": "Практичне завдання до теми 5 (Node.js webservers)",
   "main": "index.js",
   "scripts": {
     "start:dev": "ts-node --esm src\\start.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Artem Kurkin",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.17",
