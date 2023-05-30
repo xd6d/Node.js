@@ -1,11 +1,11 @@
 import {UserDto} from "./dto/user.js";
 import {UserEntity} from "./entity/user.js";
 import {users} from "../../database.js";
-import {v4} from 'uuid'
+import * as crypto from "crypto";
 
 class UsersRepository {
     create(dto: UserDto) {
-        const user: UserEntity = {id: v4(), ...dto}
+        const user: UserEntity = {id: crypto.randomUUID(), ...dto}
         users.push(user)
         return user
     }
@@ -15,13 +15,7 @@ class UsersRepository {
     }
 
     getUser(id: string) {
-        let user = undefined
-        for (let i = 0; i < users.length; i++)
-            if (users[i].id === id) {
-                user = users[i]
-                break
-            }
-        return user
+        return users.find(user => user.id === id)
     }
 
     delete(id: string) {

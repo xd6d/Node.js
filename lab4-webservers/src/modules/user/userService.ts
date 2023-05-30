@@ -1,15 +1,10 @@
 import {usersRepository} from "./usersRepository.js";
 import {UserDto} from "./dto/user.js";
-import httpErrors from 'http-errors';
 
-const {BadRequest} = httpErrors;
 
 class UserService {
     create(username: string, name?: string) {
-        if (!username)
-            throw new BadRequest("No username given")
-        const dto = new UserDto(username, name || username)
-        return usersRepository.create(dto)
+        return usersRepository.create(new UserDto(username, name || username))
     }
 
     getAllUsers() {
@@ -17,28 +12,22 @@ class UserService {
     }
 
     getUser(id: string) {
-        const user = usersRepository.getUser(id)
-        if (!user) {
-            throw new BadRequest("No such user")
-        }
-        return user
+        return usersRepository.getUser(id)
     }
 
     update(id: string, username?: string, name?: string) {
         const user = this.getUser(id)
-        if (username)
-            user.username = username
-        if (name)
-            user.name = name
+        if (user) {
+            if (username)
+                user.username = username
+            if (name)
+                user.name = name
+        }
         return user
     }
 
     delete(id: string) {
-        const user = usersRepository.delete(id)
-        if (!user) {
-            throw new BadRequest("No such user")
-        }
-        return user
+        return usersRepository.delete(id)
     }
 }
 
