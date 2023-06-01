@@ -42,10 +42,27 @@ class UserService {
         return userRepository.delete({id: id}).then(result => result.affected)
     }
 
-    getAllByTitle(title: string) {
+    getAllByTitleAgeCityPage(query: {
+        title?: string,
+        age?: string,
+        city?: string,
+        page?: string,
+        amount?: string
+    }) {
+        let page = +query.page! || 1
+        if (page < 1)
+            page = 1
+        let amount = +query.amount! || 5
+        if (amount < 1)
+            amount = 5
         return userRepository.createQueryBuilder("users")
-            .innerJoin("posts", "p", "p.userId=users.id")
-            .where("p.title=:title", {title: title})
+            .leftJoin("posts", "p", "p.userId=users.id")
+            .where(query.title ? "p.title=:title" : "true", {title: query.title})
+            .andWhere(query.age ? "users.age=:age" : "true", {age: query.age})
+            .andWhere(query.city ? "users.address ->> \'city\'=:city" : "true", {city: query.city})
+            .addOrderBy("users.id")
+            .skip(amount * (page - 1))
+            .take(amount)
             .getMany()
     }
 }

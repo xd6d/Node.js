@@ -1,7 +1,6 @@
 import {Router} from "express";
 import {userService} from "./userService.js";
 import httpErrors from "http-errors";
-import {User} from "./entity/user.js";
 
 const {NotFound, BadRequest} = httpErrors
 
@@ -9,25 +8,7 @@ const router = Router()
 
 router.get("/", async (req, res, next) => {
     try {
-        const amountPerPage = 2
-        const title = req.query.title
-        let users: User[]
-        if (title)
-            users = await userService.getAllByTitle(title.toString())
-        else
-            users = await userService.getAllUsers()
-        const age = req.query.age
-        if (age)
-            users = users.filter(user => user.age === parseInt(age.toString(), 10))
-        const city = req.query.city
-        if (city)
-            users = users.filter(user => user.address).filter(user => user.address.city === city.toString())
-        let page = 1
-        if (req.query.page) {
-            page = parseInt(req.query.page.toString(), 10)
-            res.json(users.slice(amountPerPage * (page - 1), amountPerPage * page))
-        } else
-            res.json(users)
+        res.json(await userService.getAllByTitleAgeCityPage(req.query))
     } catch (err) {
         next(err)
     }

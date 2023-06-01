@@ -22,4 +22,5 @@ router.post("/", async (req, res, next) => {
         next(new BadRequest("Invalid parameters"))
     }
 })
+
 export const postController = router

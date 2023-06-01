@@ -20,7 +20,7 @@ export class User {
     @Column({nullable: true})
     info: string
 
-    @Column('simple-json', {nullable: true})
+    @Column('jsonb', {nullable: true})
     address: {
         city: string,
         street: string
