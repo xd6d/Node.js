@@ -7,9 +7,10 @@
   "scripts": {
     "start:dev": "ts-node --esm src\\start.ts",
     "typeorm": "typeorm-ts-node-esm",
-    "migration:generate": "typeorm migration:generate -d ./src/data-source.ts",
-    "migration:run": "typeorm migration:run -d ./src/data-source.ts",
-    "migration:revert": "typeorm migration:revert -d ./src/data-source.ts"
+    "build": "npx tsc",
+    "migration:generate": "typeorm migration:generate migrations/ -d lib/data-source.js",
+    "migration:run": "typeorm migration:run -d lib/data-source.js",
+    "migration:revert": "typeorm migration:revert -d lib/data-source.js"
   },
   "keywords": [],
   "author": "Artem Kurkin",
